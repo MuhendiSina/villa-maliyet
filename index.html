@@ -1,78 +1,97 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Villa Maliyet Hesaplama</title>
+  <title>Gelişmiş Villa Maliyet Hesaplama</title>
   <style>
-    body {{ font-family: Arial; padding: 30px; }}
-    table {{ border-collapse: collapse; width: 100%; margin-top: 20px; }}
-    th, td {{ border: 1px solid #ccc; padding: 8px; text-align: right; }}
-    th {{ background-color: #f0f0f0; text-align: left; }}
-    .toggle {{ cursor: pointer; color: #1e70bf; }}
-    .hidden {{ display: none; }}
-    .alt {{ color: #666; text-align: left; padding-left: 24px; font-style: italic; }}
+    body { font-family: Arial; padding: 30px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: right; }
+    th { background-color: #f0f0f0; text-align: left; }
+    .toggle { cursor: pointer; color: #1e70bf; }
+    .hidden { display: none; }
+    .alt { color: #666; text-align: left; padding-left: 24px; font-style: italic; }
+    input[type='number'] { width: 100px; }
   </style>
 </head>
 <body>
-  <h2>Villa Maliyet Hesaplama (GitHub JSON Canlı)</h2>
+  <h2>Gelişmiş Villa Maliyet Hesaplama</h2>
   <label>Toplam İnşaat Alanı (m²): </label>
   <input type="number" id="area" value="286" onchange="calculate()" />
 
   <table id="costTable">
     <thead>
-      <tr><th>İmalat Kalemi</th><th>Birim Fiyat (TL/m²)</th><th>Toplam Tutar (TL)</th></tr>
+      <tr>
+        <th>İmalat Kalemi</th>
+        <th>Yakl. Metraj (m²)</th>
+        <th>Manuel Metraj</th>
+        <th>Sistem Birim Fiyatı</th>
+        <th>Manuel Fiyat</th>
+        <th>Toplam Tutar</th>
+      </tr>
     </thead>
     <tbody></tbody>
   </table>
 
   <script>
-    let maliyetVerisi = {{}};
+    let maliyetVerisi = {};
 
-    function toggle(group) {{
-      document.querySelectorAll("." + group).forEach(row => {{
+    function toggle(group) {
+      document.querySelectorAll("." + group).forEach(row => {
         row.classList.toggle("hidden");
-      }});
-    }}
+      });
+    }
 
-    function calculate() {{
+    function calculate() {
       const area = parseFloat(document.getElementById("area").value);
       const tbody = document.querySelector("#costTable tbody");
       tbody.innerHTML = "";
       let total = 0;
 
-      for (const [kalem, [birim, altlar]] of Object.entries(maliyetVerisi)) {{
+      for (const [kalem, [birim, altlar]] of Object.entries(maliyetVerisi)) {
         const uid = kalem.replace(/\s+/g, '_');
-        const toplam = (birim * area).toFixed(2);
+        const yaklasikMetraj = area;
+        const manuelMetrajInput = `<input type='number' id='mMetraj_${uid}' placeholder='Ops.' onchange='calculate()'/>`;
+        const manuelFiyatInput = `<input type='number' id='mFiyat_${uid}' placeholder='Ops.' onchange='calculate()'/>`;
+
+        const manuelMetraj = parseFloat(document.getElementById("mMetraj_" + uid)?.value) || yaklasikMetraj;
+        const manuelFiyat = parseFloat(document.getElementById("mFiyat_" + uid)?.value);
+        const aktifBirim = isNaN(manuelFiyat) ? birim : manuelFiyat;
+        const toplam = (manuelMetraj * aktifBirim).toFixed(2);
         total += parseFloat(toplam);
 
         tbody.insertAdjacentHTML("beforeend",
-          `<tr class="toggle" onclick="toggle('${{uid}}')">
-            <td><strong>▶ ${{kalem}}</strong></td>
-            <td>${{birim.toFixed(2)}}</td>
-            <td>${{toplam}}</td>
+          `<tr class="toggle" onclick="toggle('${uid}')">
+            <td><strong>▶ ${kalem}</strong></td>
+            <td>${yaklasikMetraj}</td>
+            <td>${manuelMetrajInput}</td>
+            <td>${birim.toFixed(2)}</td>
+            <td>${manuelFiyatInput}</td>
+            <td>${toplam}</td>
           </tr>`);
 
-        for (const [alt, alt_birim] of Object.entries(altlar)) {{
+        for (const [alt, alt_birim] of Object.entries(altlar)) {
           const alt_toplam = (alt_birim * area).toFixed(2);
           tbody.insertAdjacentHTML("beforeend",
-            `<tr class="${{uid}} hidden">
-              <td class="alt">- ${{alt}}</td>
-              <td>${{alt_birim.toFixed(2)}}</td>
-              <td>${{alt_toplam}}</td>
+            `<tr class="${uid} hidden">
+              <td class="alt">- ${alt}</td>
+              <td colspan="4"></td>
+              <td>${alt_toplam}</td>
             </tr>`);
-        }}
-      }}
+        }
+      }
 
       tbody.insertAdjacentHTML("beforeend",
-        `<tr><th colspan="2">GENEL TOPLAM</th><th>${{total.toLocaleString()}} TL</th></tr>`);
-    }}
+        `<tr><th colspan="5">GENEL TOPLAM</th><th>${total.toLocaleString()} TL</th></tr>`);
+    }
 
-    fetch("https://raw.githubusercontent.com/MuhendiSina/villa-maliyet/refs/heads/main/maliyetler.json")
+    fetch("maliyetler.json")
       .then(res => res.json())
-      .then(data => {{
+      .then(data => {
         maliyetVerisi = data;
         calculate();
-      }});
+      });
   </script>
 </body>
 </html>
