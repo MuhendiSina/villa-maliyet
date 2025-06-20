@@ -1,10 +1,16 @@
 {
-  "Beton Demir": [2601.40, {
-    "C30 beton": 2280,
-    "Demir donatı": 16000
-  }],
-  "Çatı": [894.34, {
-    "Çelik karkas": 710,
-    "Şıngıl": 95
-  }]
+    "Beton Demir": [
+        2601.4,
+        {
+            "C30 beton": 2450,
+            "Demir donatı": 18500
+        }
+    ],
+    "Çatı": [
+        920.0,
+        {
+            "Çelik karkas": 740,
+            "Şıngıl": 102
+        }
+    ]
 }

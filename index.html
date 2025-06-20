@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Villa Maliyet Hesaplama</title>
+</head>
+<body>
+    <h1>Villa Maliyet Formu (GitHub JSON Entegreli)</h1>
+    <input type="number" id="area" value="286" />
+    <button onclick="calculate()">Hesapla</button>
+
+    <table id="costTable" border="1">
+        <thead>
+            <tr><th>Kalem</th><th>m² Birim Fiyat</th><th>Toplam Tutar</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+    let maliyetVerisi = {};
+
+    function calculate() {
+        const area = parseFloat(document.getElementById("area").value);
+        const tbody = document.querySelector("#costTable tbody");
+        tbody.innerHTML = "";
+        let total = 0;
+
+        for (const [kalem, [birim, altKalemler]] of Object.entries(maliyetVerisi)) {
+            const tutar = (birim * area).toFixed(2);
+            total += parseFloat(tutar);
+            const row = `<tr><td>${kalem}</td><td>${birim.toFixed(2)}</td><td>${tutar}</td></tr>`;
+            tbody.insertAdjacentHTML("beforeend", row);
+        }
+
+        tbody.insertAdjacentHTML("beforeend", `<tr><th colspan="2">TOPLAM</th><th>${total.toLocaleString()} TL</th></tr>`);
+    }
+
+    // AŞAMA 3: GitHub URL'si örnektir. Kendi GitHub Pages adresinizle değiştirin:
+    fetch("https://kullaniciadi.github.io/villa-maliyet/maliyetler.json")
+      .then(res => res.json())
+      .then(data => {
+        maliyetVerisi = data;
+        calculate();
+      });
+    </script>
+</body>
+</html>
