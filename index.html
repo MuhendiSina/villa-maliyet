@@ -1,47 +1,78 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Villa Maliyet Hesaplama</title>
+  <meta charset="UTF-8">
+  <title>Villa Maliyet Hesaplama</title>
+  <style>
+    body { font-family: Arial; padding: 30px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: right; }
+    th { background-color: #f0f0f0; text-align: left; }
+    .toggle { cursor: pointer; color: #1e70bf; }
+    .hidden { display: none; }
+    .alt { color: #666; text-align: left; padding-left: 24px; font-style: italic; }
+  </style>
 </head>
 <body>
-    <h1>Villa Maliyet Formu (GitHub JSON Entegreli)</h1>
-    <input type="number" id="area" value="286" />
-    <button onclick="calculate()">Hesapla</button>
+  <h2>Villa Maliyet Hesaplama (Tam Liste)</h2>
+  <label>Toplam İnşaat Alanı (m²): </label>
+  <input type="number" id="area" value="286" onchange="calculate()" />
 
-    <table id="costTable" border="1">
-        <thead>
-            <tr><th>Kalem</th><th>m² Birim Fiyat</th><th>Toplam Tutar</th></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <table id="costTable">
+    <thead>
+      <tr><th>İmalat Kalemi</th><th>Birim Fiyat (TL/m²)</th><th>Toplam Tutar (TL)</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <script>
+  <script>
     let maliyetVerisi = {};
 
-    function calculate() {
-        const area = parseFloat(document.getElementById("area").value);
-        const tbody = document.querySelector("#costTable tbody");
-        tbody.innerHTML = "";
-        let total = 0;
-
-        for (const [kalem, [birim, altKalemler]] of Object.entries(maliyetVerisi)) {
-            const tutar = (birim * area).toFixed(2);
-            total += parseFloat(tutar);
-            const row = `<tr><td>${kalem}</td><td>${birim.toFixed(2)}</td><td>${tutar}</td></tr>`;
-            tbody.insertAdjacentHTML("beforeend", row);
-        }
-
-        tbody.insertAdjacentHTML("beforeend", `<tr><th colspan="2">TOPLAM</th><th>${total.toLocaleString()} TL</th></tr>`);
+    function toggle(group) {
+      document.querySelectorAll("." + group).forEach(row => {
+        row.classList.toggle("hidden");
+      });
     }
 
-    // AŞAMA 3: GitHub URL'si örnektir. Kendi GitHub Pages adresinizle değiştirin:
-    fetch("https://kullaniciadi.github.io/villa-maliyet/maliyetler.json")
+    function calculate() {
+      const area = parseFloat(document.getElementById("area").value);
+      const tbody = document.querySelector("#costTable tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      for (const [kalem, [birim, altlar]] of Object.entries(maliyetVerisi)) {
+        const uid = kalem.replace(/\s+/g, '_');
+        const toplam = (birim * area).toFixed(2);
+        total += parseFloat(toplam);
+
+        tbody.insertAdjacentHTML("beforeend",
+          `<tr class="toggle" onclick="toggle('${uid}')">
+            <td><strong>▶ ${kalem}</strong></td>
+            <td>${birim.toFixed(2)}</td>
+            <td>${toplam}</td>
+          </tr>`);
+
+        for (const [alt, alt_birim] of Object.entries(altlar)) {
+          const alt_toplam = (alt_birim * area).toFixed(2);
+          tbody.insertAdjacentHTML("beforeend",
+            `<tr class="${uid} hidden">
+              <td class="alt">- ${alt}</td>
+              <td>${alt_birim.toFixed(2)}</td>
+              <td>${alt_toplam}</td>
+            </tr>`);
+        }
+      }
+
+      tbody.insertAdjacentHTML("beforeend",
+        `<tr><th colspan="2">GENEL TOPLAM</th><th>${total.toLocaleString()} TL</th></tr>`);
+    }
+
+    fetch("maliyetler.json")
       .then(res => res.json())
       .then(data => {
         maliyetVerisi = data;
         calculate();
       });
-    </script>
+  </script>
 </body>
 </html>

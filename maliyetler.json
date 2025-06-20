@@ -1,16 +1,112 @@
 {
+    "Projelendirme": [
+        225.17,
+        {
+            "Mimari proje": 80,
+            "Zemin etüdü": 77,
+            "Haritacı hizmeti": 35,
+            "Akustik rapor": 33
+        }
+    ],
+    "Şantiye Kurulumu": [
+        237.97,
+        {
+            "Güvenlik çiti": 138,
+            "İş güvenliği malzemeleri": 100
+        }
+    ],
+    "Hafriyat": [
+        122.61,
+        {
+            "Kazı alanı": 50,
+            "Kazı hacmi": 40,
+            "Nakliye": 32
+        }
+    ],
+    "İş makineleri": [
+        246.85,
+        {
+            "Vinç kiralama": 172,
+            "JCB kiralama": 75
+        }
+    ],
     "Beton Demir": [
         2601.4,
         {
-            "C30 beton": 2450,
-            "Demir donatı": 18500
+            "C30 beton": 974,
+            "Demir donatı": 829,
+            "Kalıp işçiliği": 625,
+            "Demir işçiliği": 173
+        }
+    ],
+    "Su yalıtımı ve Drenaj": [
+        170.47,
+        {
+            "Membran": 110,
+            "Drenaj borusu": 36,
+            "Balkon & teras yalıtım": 24
+        }
+    ],
+    "Duvar": [
+        448.08,
+        {
+            "Tuğla iç duvar": 167,
+            "Gazbeton dış duvar": 194,
+            "Harç ve işçilik": 87
         }
     ],
     "Çatı": [
-        920.0,
+        894.34,
         {
-            "Çelik karkas": 740,
-            "Şıngıl": 102
+            "Çelik karkas": 450,
+            "OSB kaplama": 84,
+            "Taş yünü yalıtım": 44,
+            "Şıngıl kaplama": 316
+        }
+    ],
+    "Dış cephe": [
+        780.1,
+        {
+            "Kompozit": 362,
+            "Söve": 220,
+            "Cephe boyası": 114,
+            "Mantolama": 84
+        }
+    ],
+    "Isıtma ve Soğutma": [
+        441.99,
+        {
+            "Klima": 126,
+            "Kombi": 90,
+            "Yerden ısıtma": 180,
+            "Doğalgaz hattı": 45
+        }
+    ],
+    "Seramik": [
+        391.06,
+        {
+            "Duvar seramiği": 155,
+            "Yer seramiği": 110,
+            "Derz": 58,
+            "Yapıştırıcı": 68
+        }
+    ],
+    "Elektrik": [
+        167.16,
+        {
+            "Tesisat": 80,
+            "Pano": 38,
+            "Topraklama": 24,
+            "Kamera": 25
+        }
+    ],
+    "Sıva ve Boya": [
+        508.86,
+        {
+            "Kara sıva": 123,
+            "Makine alçı": 142,
+            "Saten boya": 172,
+            "Astar boya": 71
         }
     ]
 }
